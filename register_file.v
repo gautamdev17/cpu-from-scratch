@@ -6,14 +6,13 @@ output reg [31:0] readout1,readout2);
 
     // combinational read
     always @(*) begin
-        readout1 = x[readreg1]; //creates mux
-        readout2 = x[readreg2];
-        x[0] = 32'b0; //dumb
+        readout1 = (readreg1 == 5'b0) ? 32'b0 : x[readreg1]; //creates mux
+        readout2 = (readreg2 == 5'b0) ? 32'b0 : x[readreg2];
     end
 
     //sequential write
     always @(posedge clk) begin
         if(write_en && writereg!=5'b0)
-            x[writereg]<=write_data; 
+            x[writereg]<=write_data;
     end
 endmodule
