@@ -10,30 +10,30 @@ module decoder (input [31:0]inst,output reg [3:0]alu_sel);// should decide on ou
             7'b0110011: //r-type
                 case({funct3,funct7[5]}) // onyl need 5th bit, cuz look at the riscv_card sheet
                     4'h0: alu_sel = 4'h0;//ADD
-                    4'h1: //SUB
-                    4'h8: //XOR
-                    4'hC: //OR
-                    4'hE: //AND
-                    4'h2: //SLL
-                    4'hA: //SRL
-                    4'hB: //SRA
-                    4'h4: //SLT
-                    4'h6: //SLTU
+                    4'h1: alu_sel = 4'h1;//SUB
+                    4'h8: alu_sel = 4'h6;//XOR
+                    4'hC: alu_sel = 4'h5;//OR
+                    4'hE: alu_sel = 4'h4;//AND
+                    4'h2: alu_sel = 4'h7;//SLL
+                    4'hA: alu_sel = 4'h8;//SRL
+                    4'hB: alu_sel = 4'h9;//SRA
+                    4'h4: alu_sel = 4'h3; //SLT
+                    4'h6: alu_sel = 4'h2;//SLTU
                 endcase
             7'b0010011: //i-type
                 case(funct3)
-                    3'h0: //ADDI
-                    3'h4: //XORI
-                    3'h6: //ORI
-                    3'h7: //ANDI
-                    3'h1: //SLLI //ignoring imm[5:11] since there is no other case with this (opcode,funct3) comb
+                    3'h0: alu_sel = 4'h0;//ADDI // needs a mux to take either from reg file or sext immediate
+                    3'h4: alu_sel = 4'h6;//XORI
+                    3'h6: alu_sel = 4'h5;//ORI
+                    3'h7: alu_sel = 4'h4;//ANDI
+                    3'h1: alu_sel = 4'h7;//SLLI //ignoring imm[5:11] since there is no other case with this (opcode,funct3) comb
                     3'h5: //SRLI & SRAI
                           if(funct7[5]) // imm[5:11] found equivalent to imm[5:11]
-                            //SRLI
+                            alu_sel = 4'h8;//SRLI
                           else
-                            //SRAI
-                    3'h2: //SLTI
-                    3'h3: //SLTIU
+                            alu_sel = 4'h9;//SRAI
+                    3'h2: alu_sel = 4'h3;//SLTI
+                    3'h3: alu_sel = 4'h2;//SLTIU
                 endcase
             7'b0000011: //i-type (loads)
                 case(funct3)

@@ -3,9 +3,9 @@ module alu #(parameter XLEN = 32) (input [XLEN-1:0]a,b,input [3:0]alu_sel,output
         c = 32'b0;carry = 0;
         case (alu_sel)
             4'h0: {carry,c} = a + b; //ADD
-            4'h1: c = {31'b0,a-b}; //SUB
+            4'h1: c = a-b; //SUB
             4'h2: c = {31'b0,a<b}; //SLTU
-            4'h3: c = $signed(a) < $signed(b); //SLT figure this out, i wanted to do pure hw implementation
+            4'h3: c = {31'b0,$signed(a) < $signed(b)}; //SLT figure this out, i wanted to do pure hw implementation
             4'h4: c = a & b;//AND
             4'h5: c = a | b;//OR
             4'h6: c = a ^ b;//XOR
@@ -17,3 +17,5 @@ module alu #(parameter XLEN = 32) (input [XLEN-1:0]a,b,input [3:0]alu_sel,output
         endcase
     end
 endmodule
+
+// update this: carry not required, not mentioned in isa
