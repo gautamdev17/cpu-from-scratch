@@ -63,6 +63,11 @@ module decoder (input [31:0]inst,output reg [3:0]alu_sel);// should decide on ou
                     //jal j-type
             7'b1100111:
                     //jalr i-type
+            //u-type
+            7'b0110111:
+                    //lui
+            7'b0010111:
+                    //auipc
         endcase
     end
 endmodule
