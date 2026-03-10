@@ -6,9 +6,7 @@ module alu #(parameter XLEN = 32) (input [XLEN-1:0]a,b,input [3:0]alu_sel,output
             4'h2: logical = a < b; //SLTU
             4'h3:
             begin
-                a = (a[XLEN-1]==1)?(~a + 32'd1):a;
-                b = (b[XLEN-1]==1)?(~b + 32'd1):b;
-                logical = a < b;
+                
             end //SLT figure this out
             4'h4: c = a & b;//AND
             4'h5: c = a | b;//OR
