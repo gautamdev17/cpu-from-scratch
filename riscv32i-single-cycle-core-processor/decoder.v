@@ -1,4 +1,4 @@
-module decoder (input [31:0]inst,output control_signals);// should decide on output
+module decoder (input [31:0]inst,output reg [3:0]alu_sel);// should decide on output
     wire [6:0]opcode;
     assign opcode = inst[6:0];
     wire [6:0]funct7;
@@ -9,7 +9,7 @@ module decoder (input [31:0]inst,output control_signals);// should decide on out
         case(opcode)
             7'b0110011: //r-type
                 case({funct3,funct7[5]}) // onyl need 5th bit, cuz look at the riscv_card sheet
-                    4'h0: //ADD
+                    4'h0: alu_sel = 4'h0;//ADD
                     4'h1: //SUB
                     4'h8: //XOR
                     4'hC: //OR
@@ -58,8 +58,11 @@ module decoder (input [31:0]inst,output control_signals);// should decide on out
                     3'h6: //BLTU
                     3'h7: //BGEU
                 endcase
-            7'b1101111: // jal & jalr
-
+            // jal & jalr
+            7'b1101111:
+                    //jal j-type
+            7'b1100111:
+                    //jalr i-type
         endcase
     end
 endmodule
