@@ -6,7 +6,7 @@ output reg [31:0] readout1,readout2);
 
     // combinational read
     always @(*) begin
-        readout1 = (readreg1 == 5'b0) ? 32'b0 : x[readreg1]; //creates mux
+        readout1 = (readreg1 == 5'b0) ? 32'b0 : x[readreg1]; //creates mux //x0 is grounded
         readout2 = (readreg2 == 5'b0) ? 32'b0 : x[readreg2];
     end
 
