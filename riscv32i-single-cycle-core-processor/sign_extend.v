@@ -1,4 +1,4 @@
-module sign_extended_offset #(parameter XLEN = 32) (input [XLEN-1:0]inst,input [2:0]instr_type,output reg [XLEN-1:0]immsext);
+module sign_extend #(parameter XLEN = 32) (input [XLEN-1:0]inst,input [2:0]instr_type,output reg [XLEN-1:0]immsext);
     always @(*) begin
         case (instr_type)
             3'b001: immsext = {{20{inst[XLEN-1]}},inst[31:20]};//i-type

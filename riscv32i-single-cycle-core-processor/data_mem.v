@@ -1,6 +1,15 @@
-module data_mem #(parameter XLEN = 32) (input [$clog2(XLEN):0]addr,output reg [XLEN-1:0]data);
-    reg [XLEN-1:0] dmem [XLEN-1:0];
+module data_mem (input [31:0]addr,output reg [31:0]data);
+    reg [7:0] dmem [2**32-1 :0]; 
+    // addressability is byte, addresses is 32-bit space, so 2^32 spaces available
+    // 2^32 = 2^2GiB = 4 GiB of memory
+    // should support all instructions like lw,lh,lb
+    // so my output will be 32 bit sized. based on control signals(instruction),it can branch the sizes
     always @(*) begin
-        data = dmem[addr];
+        data = {dmem[addr+3],dmem[addr+2],dmem[addr+1],dmem[addr]};
     end
 endmodule
+
+/*
+a good microarchitect must view all instructions that the block he is desiging is supporting,
+and then only give the spec
+*/
