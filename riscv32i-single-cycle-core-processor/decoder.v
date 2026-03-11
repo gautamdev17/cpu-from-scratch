@@ -16,7 +16,6 @@ module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_t
     localparam U_lui_op = 7'b0110111;
     localparam U_auipc_op = 7'b0010111;
 
-
     wire [6:0]opcode;
     assign opcode = inst[6:0];
     wire [6:0]funct7;
