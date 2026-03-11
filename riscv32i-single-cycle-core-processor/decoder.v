@@ -5,15 +5,30 @@ module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_t
     localparam B_type = 3'b011;
     localparam U_type = 3'b100;
     localparam J_type = 3'b101;
+
+    localparam R_op = 7'b0110011;
+    localparam I_op = 7'b0010011;
+    localparam I_load_op = 7'b0000011;
+    localparam S_op = 7'b0100011;
+    localparam B_op = 7'b1100011;
+    localparam J_op = 7'b1101111;
+    localparam I_jalr_op = 7'b1100111;
+    localparam U_lui_op = 7'b0110111;
+    localparam U_auipc_op = 7'b0010111;
+
+
     wire [6:0]opcode;
     assign opcode = inst[6:0];
     wire [6:0]funct7;
     assign funct7 = inst[31:25];
     wire [2:0]funct3;
     assign funct3 = inst[14:12];
+
     always @(*) begin
+        alu_sel = 4'h0;
+        instr_type = R_type;
         case(opcode)
-            7'b0110011: begin //r-type
+            R_op: begin //r-type
                 instr_type = R_type;
                 case({funct3,funct7[5]})// onyl need 5th bit, cuz look at the riscv_card sheet
                     4'h0: alu_sel = 4'h0;//ADD
@@ -28,7 +43,7 @@ module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_t
                     4'h6: alu_sel = 4'h2;//SLTU
                 endcase
             end
-            7'b0010011: begin //i-type
+            I_op: begin //i-type
                 instr_type = I_type;
                 case(funct3)
                     3'h0: alu_sel = 4'h0;//ADDI // needs a mux to take either from reg file or sext immediate
@@ -46,7 +61,7 @@ module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_t
                     3'h3: alu_sel = 4'h2;//SLTIU
                 endcase
             end
-            7'b0000011: begin //i-type (loads)
+            I_load_op: begin //i-type (loads)
                 instr_type = I_type;
                 case(funct3)
                     3'h0: //LB
@@ -56,7 +71,7 @@ module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_t
                     3'h5: //LHU
                 endcase
             end
-            7'b0100011: begin //s-type
+            S_op: begin //s-type
                 instr_type = S_type;
                 case(funct3)
                     3'h0: //SB
@@ -64,7 +79,7 @@ module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_t
                     3'h2: //SW
                 endcase
             end
-            7'b1100011: begin //b-type
+            B_op: begin //b-type
                 instr_type = B_type;
                 case(funct3)
                     3'h0: //BEQ
@@ -76,27 +91,29 @@ module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_t
                 endcase
             end
             // jal & jalr
-            7'b1101111: begin
+            J_op: begin
                 instr_type = J_type;
                     //jal j-type
             end
-            7'b1100111: begin
+            I_jalr_op: begin
                 instr_type = I_type;
                     //jalr i-type
             end
             //u-type
-            7'b0110111: begin
+            U_lui_op: begin
                 instr_type = U_type;
                     //lui
             end
-            7'b0010111: begin
+            U_auipc_op: begin
                 instr_type = U_type;
                     //auipc
             end
-            default: begin
-                alu_sel = 4'h0;
-                instr_type = R_type;
-            end
+            // ditched the block below. reason: say if alu_sel is not assigned for an opcode, we need default for that
+            // defaults are wriiten at the top of the always block
+            // default: begin
+            //     alu_sel = 4'h0;
+            //     instr_type = R_type;
+            // end
         endcase
     end
 endmodule
