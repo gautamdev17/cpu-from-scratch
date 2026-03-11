@@ -53,4 +53,6 @@ module cpu (input clk,rst);
         .clk(clk),
         .data(data)
     );
+
+    //going to write control signals
 endmodule
