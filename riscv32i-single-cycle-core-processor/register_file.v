@@ -1,4 +1,4 @@
-module register_file #(parameter XLEN = 32) (input [$clog2(XLEN)-1:0] readreg1,readreg2,writereg,input clk,write_en,input [31:0]write_data,
+module register_file #(parameter XLEN = 32) (input [4:0] readreg1,readreg2,writereg,input clk,write_en,input [31:0]write_data,
 output reg [31:0] readout1,readout2);
     reg [XLEN-1:0] x [31:0]; // register memory
     //reg [width-1:0] array_name [0:no.ofelements-1];

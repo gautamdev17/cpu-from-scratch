@@ -1,5 +1,5 @@
 module data_mem (input [31:0]addr,wr_data,input wr_en,clk,output reg [31:0]data);
-    reg [7:0] dmem [2**32-1 :0]; 
+    reg [7:0] dmem [2**32-1 :0]; //using 2**32 just for design now. ill change while simulation
     // addressability is byte, addresses is 32-bit space, so 2^32 spaces available
     // 2^32 = 2^2GiB = 4 GiB of memory
     // should support all instructions like lw,lh,lb

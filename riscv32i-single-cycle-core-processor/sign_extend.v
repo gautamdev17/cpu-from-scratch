@@ -17,7 +17,7 @@ module sign_extend #(parameter XLEN = 32) (input [XLEN-1:0]inst,input [2:0]instr
             inst[19:12] = imm[19:12];           */
             3'b101: immsext = {{11{inst[XLEN-1]}},inst[31],inst[19:12],inst[20],inst[30:21],1'b0};//jal-j
             3'b100: immsext = {inst[31:12],12'b0};//lui-u
-            default: 32'b0;
+            default: immsext = 32'b0;
         endcase
     end
 endmodule
