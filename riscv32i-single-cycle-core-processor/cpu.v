@@ -55,4 +55,9 @@ module cpu (input clk,rst);
     );
 
     //going to write control signals
+    if(instr_type == 3'b011) begin
+        case(c):
+            
+        endcase
+    end
 endmodule
