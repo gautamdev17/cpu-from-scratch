@@ -1,6 +1,6 @@
-module sign_extended_offset #(parameter XLEN = 32) (input [31:0]inst,input [2:0]instr_format,output reg [XLEN-1:0]immsext);
+module sign_extended_offset #(parameter XLEN = 32) (input [XLEN-1:0]inst,input [2:0]instr_type,output reg [XLEN-1:0]immsext);
     always @(*) begin
-        case (instr_format)
+        case (instr_type)
             3'b001: immsext = {{20{inst[XLEN-1]}},inst[31:20]};//i-type
             3'b010: immsext = {{20{inst[XLEN-1]}},inst[31:25],inst[11:7]};//s-type
             /* the b-type is decoded like this:
@@ -17,6 +17,7 @@ module sign_extended_offset #(parameter XLEN = 32) (input [31:0]inst,input [2:0]
             inst[19:12] = imm[19:12];           */
             3'b101: immsext = {{11{inst[XLEN-1]}},inst[31],inst[19:12],inst[20],inst[30:21],1'b0};//jal-j
             3'b100: immsext = {inst[31:12],12'b0};//lui-u
+            default: 32'b0;
         endcase
     end
 endmodule

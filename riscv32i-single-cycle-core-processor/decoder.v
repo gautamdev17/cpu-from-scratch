@@ -1,10 +1,10 @@
-module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_format);// should decide on output
-    localparam R_format = 3'b000;
-    localparam I_format = 3'b001;
-    localparam S_format = 3'b010;
-    localparam B_format = 3'b011;
-    localparam U_format = 3'b100;
-    localparam J_format = 3'b101;
+module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_type);// should decide on output
+    localparam R_type = 3'b000;
+    localparam I_type = 3'b001;
+    localparam S_type = 3'b010;
+    localparam B_type = 3'b011;
+    localparam U_type = 3'b100;
+    localparam J_type = 3'b101;
     wire [6:0]opcode;
     assign opcode = inst[6:0];
     wire [6:0]funct7;
@@ -14,7 +14,7 @@ module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_f
     always @(*) begin
         case(opcode)
             7'b0110011: begin //r-type
-                instr_format = R_format;
+                instr_type = R_type;
                 case({funct3,funct7[5]})// onyl need 5th bit, cuz look at the riscv_card sheet
                     4'h0: alu_sel = 4'h0;//ADD
                     4'h1: alu_sel = 4'h1;//SUB
@@ -29,7 +29,7 @@ module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_f
                 endcase
             end
             7'b0010011: begin //i-type
-                instr_format = I_format;
+                instr_type = I_type;
                 case(funct3)
                     3'h0: alu_sel = 4'h0;//ADDI // needs a mux to take either from reg file or sext immediate
                     3'h4: alu_sel = 4'h6;//XORI
@@ -46,8 +46,8 @@ module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_f
                     3'h3: alu_sel = 4'h2;//SLTIU
                 endcase
             end
-            7'b0000011: //i-type (loads)
-                instr_format = I_format;
+            7'b0000011: begin //i-type (loads)
+                instr_type = I_type;
                 case(funct3)
                     3'h0: //LB
                     3'h1: //LH
@@ -55,15 +55,17 @@ module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_f
                     3'h4: //LBU
                     3'h5: //LHU
                 endcase
-            7'b0100011: //s-type
-                instr_format = S_format;
+            end
+            7'b0100011: begin //s-type
+                instr_type = S_type;
                 case(funct3)
                     3'h0: //SB
                     3'h1: //SH
                     3'h2: //SW
                 endcase
-            7'b1100011: //b-type
-                instr_format = B_format;
+            end
+            7'b1100011: begin //b-type
+                instr_type = B_type;
                 case(funct3)
                     3'h0: //BEQ
                     3'h1: //BNE
@@ -72,20 +74,29 @@ module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_f
                     3'h6: //BLTU
                     3'h7: //BGEU
                 endcase
+            end
             // jal & jalr
-            7'b1101111:
-                instr_format = J_format;
+            7'b1101111: begin
+                instr_type = J_type;
                     //jal j-type
-            7'b1100111:
-                instr_format = I_format;
+            end
+            7'b1100111: begin
+                instr_type = I_type;
                     //jalr i-type
+            end
             //u-type
-            7'b0110111:
-                instr_format = U_format;
+            7'b0110111: begin
+                instr_type = U_type;
                     //lui
-            7'b0010111:
-                instr_format = U_format;
+            end
+            7'b0010111: begin
+                instr_type = U_type;
                     //auipc
+            end
+            default: begin
+                alu_sel = 4'h0;
+                instr_type = R_type;
+            end
         endcase
     end
 endmodule
