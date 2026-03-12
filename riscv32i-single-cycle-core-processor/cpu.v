@@ -95,6 +95,7 @@ module cpu (input clk,rst);
                 case(funct3)
                     3'h0: 
                 endcase
+                pc_in = 
             end
         endcase
     end
