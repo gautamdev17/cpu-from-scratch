@@ -10,7 +10,7 @@ module cpu (input clk,rst);
     localparam INUM = 64;
     wire [3:0]alu_sel;
     wire [2:0]instr_type,funct3;
-    wire ALUb;
+    wire ALUb,RegWrite;
 
     program_counter #(.XLEN(32)) pc_inst(
         .pc_in(pc_in),
@@ -27,17 +27,18 @@ module cpu (input clk,rst);
     decoder dec(
         .inst(inst),
         .alu_sel(alu_sel),
-        .instr_type(instr_type)
-        .funct3(funct3)
-        .ALUb(ALUb)
+        .instr_type(instr_type),
+        .funct3(funct3),
+        .ALUb(ALUb),
+        .RegWrite(RegWrite)
     );
     
     register_file #(.XLEN(32)) rfile(
         .readreg1(inst[19:15]),
         .readreg2(inst[25:20]),
-        .writereg(inst[11:7]),
+        .writereg(inst[11:7]), // any instruction writing in reg will be in rd which is inst[11:7]
         .clk(clk),
-        .write_en(smtg from decoder or mux),
+        .write_en(RegWrite),
         .write_data(from alu or sec mem),
         .readout1(readout1),
         .readout2(readout2)

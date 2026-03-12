@@ -2,7 +2,7 @@ module decoder (input [31:0]inst,//decoding the instruction
 output reg [3:0]alu_sel,//for selection of alu operation
 output reg [2:0]instr_type,//for sext
 output [2:0]funct3,//for finding which B-type instruction
-output ALUb);//fior figuring out what does to ALU ka 'b'
+output ALUb,RegWrite);//fior figuring out what does to ALU ka 'b'
     localparam R_type = 3'b000;
     localparam I_type = 3'b001;
     localparam S_type = 3'b010;
@@ -120,5 +120,9 @@ output ALUb);//fior figuring out what does to ALU ka 'b'
         endcase
     end
 
-    assign ALUb = !((instr_type==R_type) | (instr_type==R_type));
+    // alu 'b' is rs2 when its r-type or b-type
+    // check mux in cpu for clarity
+    assign ALUb = !((instr_type==R_type) | (instr_type==B_type));
+    // r,i,j,u type instructions write to reg
+    assign RegWrite = !((instr_type==S_type) |(instr_type==R_type));
 endmodule
