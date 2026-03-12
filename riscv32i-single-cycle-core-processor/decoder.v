@@ -2,7 +2,7 @@ module decoder (input [31:0]inst,//decoding the instruction
 output reg [3:0]alu_sel,//for selection of alu operation
 output reg [2:0]instr_type,//for sext
 output [2:0]funct3,//for finding which B-type instruction
-output ALUb,RegWrite);//fior figuring out what does to ALU ka 'b'
+output ALUb,RegWrite,ALUorMem,WriteMem);//fior figuring out what does to ALU ka 'b'
     localparam R_type = 3'b000;
     localparam I_type = 3'b001;
     localparam S_type = 3'b010;
@@ -25,10 +25,12 @@ output ALUb,RegWrite);//fior figuring out what does to ALU ka 'b'
     wire [6:0]funct7;
     assign funct7 = inst[31:25];
     assign funct3 = inst[14:12];
+    reg load ;
 
     always @(*) begin
         alu_sel = 4'h0;
         instr_type = R_type;
+        load = 1'b0;
         case(opcode)
             R_op: begin //r-type
                 instr_type = R_type;
@@ -66,11 +68,11 @@ output ALUb,RegWrite);//fior figuring out what does to ALU ka 'b'
             I_load_op: begin //i-type (loads)
                 instr_type = I_type;
                 case(funct3)
-                    3'h0: //LB
-                    3'h1: //LH
-                    3'h2: //LW
-                    3'h4: //LBU
-                    3'h5: //LHU
+                    3'h0: load = 1'b1;//LB
+                    3'h1: load = 1'b1;//LH
+                    3'h2: load = 1'b1;//LW
+                    3'h4: load = 1'b1;//LBU
+                    3'h5: load = 1'b1;//LHU
                 endcase
             end
             S_op: begin //s-type
@@ -124,5 +126,9 @@ output ALUb,RegWrite);//fior figuring out what does to ALU ka 'b'
     // check mux in cpu for clarity
     assign ALUb = !((instr_type==R_type) | (instr_type==B_type));
     // r,i,j,u type instructions write to reg
-    assign RegWrite = !((instr_type==S_type) |(instr_type==R_type));
+    assign RegWrite = !((instr_type==S_type) |(instr_type==B_type));
+    // either alu or sec mem should write to reg
+    assign ALUorMem = load;
+    //so wr_en for dmem is like only given for store instructions so easy.
+    assign WriteMem = (instr_type==S_type);
 endmodule

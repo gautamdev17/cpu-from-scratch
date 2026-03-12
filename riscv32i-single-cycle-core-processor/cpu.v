@@ -6,11 +6,11 @@ module cpu (input clk,rst);
     localparam U_type = 3'b100;
     localparam J_type = 3'b101;
 
-    wire [31:0]pc_in,pc_out,inst,readout1,readout2,c,immsext,data,b;
+    wire [31:0]pc_in,pc_out,inst,readout1,readout2,c,immsext,data,b,write_data;
     localparam INUM = 64;
     wire [3:0]alu_sel;
     wire [2:0]instr_type,funct3;
-    wire ALUb,RegWrite;
+    wire ALUb,RegWrite,ALUorMem,WriteMem;
 
     program_counter #(.XLEN(32)) pc_inst(
         .pc_in(pc_in),
@@ -30,16 +30,25 @@ module cpu (input clk,rst);
         .instr_type(instr_type),
         .funct3(funct3),
         .ALUb(ALUb),
-        .RegWrite(RegWrite)
+        .RegWrite(RegWrite),
+        .ALUorMem(ALUorMem),
+        .WriteMem(WriteMem)
     );
     
+    always @(*) begin
+        if(!ALUorMem)
+            write_data = c;
+        else
+            write_data = data;
+    end
+
     register_file #(.XLEN(32)) rfile(
         .readreg1(inst[19:15]),
         .readreg2(inst[25:20]),
         .writereg(inst[11:7]), // any instruction writing in reg will be in rd which is inst[11:7]
         .clk(clk),
         .write_en(RegWrite),
-        .write_data(from alu or sec mem),
+        .write_data(write_data),
         .readout1(readout1),
         .readout2(readout2)
     );
@@ -67,7 +76,7 @@ module cpu (input clk,rst);
     data_mem dmem(
         .addr(c), //addr input is always the output of alu, some base + offset,i.e,reg+imm bro
         .wr_data(readout2), //only s-type insts write directly to sec mem
-        .wr_en(smtg from decoder,muxes),
+        .wr_en(WriteMem),
         .clk(clk),
         .data(data)
     );
