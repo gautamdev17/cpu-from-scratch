@@ -1,8 +1,16 @@
 module cpu (input clk,rst);
-    wire [31:0]pc_in,pc_out,inst,readout1,readout2,c,immsext,data;
+    localparam R_type = 3'b000;
+    localparam I_type = 3'b001;
+    localparam S_type = 3'b010;
+    localparam B_type = 3'b011;
+    localparam U_type = 3'b100;
+    localparam J_type = 3'b101;
+
+    wire [31:0]pc_in,pc_out,inst,readout1,readout2,c,immsext,data,b;
     localparam INUM = 64;
     wire [3:0]alu_sel;
-    wire [2:0]instr_type;
+    wire [2:0]instr_type,funct3;
+    wire ALUb;
 
     program_counter #(.XLEN(32)) pc_inst(
         .pc_in(pc_in),
@@ -20,6 +28,8 @@ module cpu (input clk,rst);
         .inst(inst),
         .alu_sel(alu_sel),
         .instr_type(instr_type)
+        .funct3(funct3)
+        .ALUb(ALUb)
     );
     
     register_file #(.XLEN(32)) rfile(
@@ -33,9 +43,16 @@ module cpu (input clk,rst);
         .readout2(readout2)
     );
 
+    always @(*) begin
+        if(!ALUb)
+            b = readout2;
+        else
+            b = immsext;
+    end
+
     alu #(.XLEN(32)) alu_inst(
         .a(readout1),
-        .b(either readout1 or immsext),
+        .b(b),
         .alu_sel(alu_sel),
         .c(c)
     );
@@ -55,9 +72,20 @@ module cpu (input clk,rst);
     );
 
     //going to write control signals
-    if(instr_type == 3'b011) begin
-        case(c):
-            
+    /*  
+    mux before alu: 
+    so a mux before alu 'b', sel line will be instr format.  
+    for R,B 'b' = rs2.
+    for I,S,JALR 'b' = sext(imm)
+    rest no alu use, some adders
+    */
+    always @(*) begin
+        case(instr_type)
+            B_type: begin
+                case(funct3)
+                    3'h0: 
+                endcase
+            end
         endcase
     end
 endmodule

@@ -1,4 +1,8 @@
-module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_type);// should decide on output
+module decoder (input [31:0]inst,//decoding the instruction
+output reg [3:0]alu_sel,//for selection of alu operation
+output reg [2:0]instr_type,//for sext
+output [2:0]funct3,//for finding which B-type instruction
+output ALUb);//fior figuring out what does to ALU ka 'b'
     localparam R_type = 3'b000;
     localparam I_type = 3'b001;
     localparam S_type = 3'b010;
@@ -20,7 +24,6 @@ module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_t
     assign opcode = inst[6:0];
     wire [6:0]funct7;
     assign funct7 = inst[31:25];
-    wire [2:0]funct3;
     assign funct3 = inst[14:12];
 
     always @(*) begin
@@ -80,13 +83,14 @@ module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_t
             end
             B_op: begin //b-type
                 instr_type = B_type;
+                // we need to tell which function it is outside, they need for the contro;l signals
                 case(funct3)
-                    3'h0: //BEQ
-                    3'h1: //BNE
-                    3'h4: //BLT
-                    3'h5: //BGE
-                    3'h6: //BLTU
-                    3'h7: //BGEU
+                    3'h0: alu_sel = 4'h1;//BEQ
+                    3'h1: alu_sel = 4'h1;//BNE
+                    3'h4: alu_sel = 4'h3;//BLT
+                    3'h5: alu_sel = 4'h3;//BGE
+                    3'h6: alu_sel = 4'h2;//BLTU
+                    3'h7: alu_sel = 4'h2;//BGEU
                 endcase
             end
             // jal & jalr
@@ -115,4 +119,6 @@ module decoder (input [31:0]inst,output reg [3:0]alu_sel,output reg [2:0]instr_t
             // end
         endcase
     end
+
+    assign ALUb = !((instr_type==R_type) | (instr_type==R_type));
 endmodule
