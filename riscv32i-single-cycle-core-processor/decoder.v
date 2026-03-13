@@ -3,7 +3,7 @@ output reg [3:0]alu_sel,//for selection of alu operation
 output reg [2:0]instr_type,//for sext
 output [2:0]funct3,//for finding which B-type instruction
 output ALUb,RegWrite,ALUorMem,WriteMem,
-output reg jalr,lui,auipc);//fior figuring out what does to ALU ka 'b'
+output reg jalr,lui,auipc,jump);//fior figuring out what does to ALU ka 'b'
     localparam R_type = 3'b000;
     localparam I_type = 3'b001;
     localparam S_type = 3'b010;
@@ -35,6 +35,7 @@ output reg jalr,lui,auipc);//fior figuring out what does to ALU ka 'b'
         jalr = 1'b0;
         lui = 1'b0;
         auipc = 1'b0;
+        jump = 1'b0;
         case(opcode)
             R_op: begin //r-type
                 instr_type = R_type;
@@ -102,6 +103,7 @@ output reg jalr,lui,auipc);//fior figuring out what does to ALU ka 'b'
             // jal & jalr
             J_op: begin
                 instr_type = J_type;
+                jump = 1'b1;
                 //include rd write here
                     //jal j-type
             end
@@ -137,6 +139,12 @@ output reg jalr,lui,auipc);//fior figuring out what does to ALU ka 'b'
     // r,i,j,u type instructions write to reg
     assign RegWrite = !((instr_type==S_type) |(instr_type==B_type));
     // either alu or sec mem should write to reg
+    /*13-05-2026,11:11 AM, at library, didnt shower today man
+    i need to expand this:
+    lui - rd = immsext
+    auipc - rd = pc_out + immsext
+    jal,jalr - rd = pc_out + 4
+    */
     assign ALUorMem = load;
     //so wr_en for dmem is like only given for store instructions so easy.
     assign WriteMem = (instr_type==S_type);

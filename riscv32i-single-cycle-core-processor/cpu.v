@@ -11,7 +11,7 @@ module cpu (input clk,rst);
     localparam INUM = 64;
     wire [3:0]alu_sel;
     wire [2:0]instr_type,funct3;
-    wire ALUb,RegWrite,ALUorMem,WriteMem,jalr,lui,auipc;
+    wire ALUb,RegWrite,ALUorMem,WriteMem,jalr,lui,auipc,jump;
 
     reg branch_cond;//this is a boolean, decides if a branch should be take or not
     // handling what the pc value should be
@@ -45,17 +45,40 @@ module cpu (input clk,rst);
         .RegWrite(RegWrite),
         .ALUorMem(ALUorMem),
         .WriteMem(WriteMem),
-        .jalr(jalr)
+        .jalr(jalr),
         .lui(lui),
-        .auipc(auipc)
+        .auipc(auipc),
+        .jump(jump)
     );
     
     always @(*) begin
+        // if(!ALUorMem)
+        //     write_data = c;
+        // else if(lui)
+        //     write_data = immsext
+        // else
+        //     write_data = data;
+        //case({uji_writebacks,ALUorMem})
+
+        //endcase
+        //write_en is well handled in the regfile,chec once if havin doubts
         if(!ALUorMem)
             write_data = c;
+        else if(lui)
+            write_data = immsext;
+        else if(auipc)
+            write_data = pc_out + immsext;
+        else if(jump | jalr)
+            write_data = pc_out + 4;
         else
             write_data = data;
     end
+    /*
+    i need to expand this:
+    lui - rd = immsext
+    auipc - rd = pc_out + immsext
+    jal,jalr - rd = pc_out + 4
+    */
 
     register_file #(.XLEN(32)) rfile(
         .readreg1(inst[19:15]),
