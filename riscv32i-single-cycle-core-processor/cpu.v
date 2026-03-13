@@ -8,7 +8,7 @@ module cpu (input clk,rst);
 
     wire [31:0]pc_out,inst,readout1,readout2,c,immsext,data;
     reg [31:0]pc_in,b,write_data;
-    localparam INUM = 64;
+    localparam INUM = 256;
     wire [3:0]alu_sel;
     wire [2:0]instr_type,funct3;
     wire ALUb,RegWrite,ALUorMem,WriteMem,jalr,lui,auipc,jump;
@@ -31,7 +31,7 @@ module cpu (input clk,rst);
         .pc_out(pc_out)
     );
 
-    instruction_mem #(.inum(64)) imem(
+    instruction_mem #(.inum(256)) imem(
         .instaddr(pc_out[$clog2(INUM)+1:2]),
         .inst(inst)
     );
@@ -62,16 +62,16 @@ module cpu (input clk,rst);
 
         //endcase
         //write_en is well handled in the regfile,chec once if havin doubts
-        if(!ALUorMem)
-            write_data = c;
-        else if(lui)
+        if(lui)
             write_data = immsext;
         else if(auipc)
             write_data = pc_out + immsext;
         else if(jump | jalr)
             write_data = pc_out + 4;
-        else
+        else if(ALUorMem)
             write_data = data;
+        else
+            write_data = c;
     end
     /*
     i need to expand this:
@@ -82,7 +82,7 @@ module cpu (input clk,rst);
 
     register_file #(.XLEN(32)) rfile(
         .readreg1(inst[19:15]),
-        .readreg2(inst[25:20]),
+        .readreg2(inst[24:20]),
         .writereg(inst[11:7]), // any instruction writing in reg will be in rd which is inst[11:7]
         .clk(clk),
         .write_en(RegWrite),

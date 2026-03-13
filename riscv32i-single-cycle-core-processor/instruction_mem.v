@@ -1,4 +1,4 @@
-module instruction_mem #(parameter inum = 64) (input [$clog2(inum)-1:0] instaddr,output reg [31:0]inst);
+module instruction_mem #(parameter inum = 256) (input [$clog2(inum)-1:0] instaddr,output reg [31:0]inst);
     // always do $clog when addressing. dont hardcode.
     reg [31:0] imem [inum-1:0];
     initial $readmemh("program.hex", imem); // added this

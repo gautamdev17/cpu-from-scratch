@@ -82,11 +82,11 @@ output reg jalr,lui,auipc,jump);//fior figuring out what does to ALU ka 'b'
             end
             S_op: begin //s-type
                 instr_type = S_type;
-                case(funct3)
-                    3'h0: //SB
-                    3'h1: //SH
-                    3'h2: //SW
-                endcase
+                // case(funct3)
+                //     3'h0: //SB
+                //     3'h1: //SH
+                //     3'h2: //SW
+                // endcase
             end
             B_op: begin //b-type
                 instr_type = B_type;
