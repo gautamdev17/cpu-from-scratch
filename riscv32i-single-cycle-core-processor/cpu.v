@@ -6,13 +6,24 @@ module cpu (input clk,rst);
     localparam U_type = 3'b100;
     localparam J_type = 3'b101;
 
-    wire [31:0]pc_in,pc_out,inst,readout1,readout2,c,immsext,data,b,write_data;
+    wire [31:0]pc_out,inst,readout1,readout2,c,immsext,data;
+    reg [31:0]pc_in,b,write_data;
     localparam INUM = 64;
     wire [3:0]alu_sel;
     wire [2:0]instr_type,funct3;
     wire ALUb,RegWrite,ALUorMem,WriteMem,jalr;
 
-    pc_mux ()
+    reg branch_cond;//this is a boolean, decides if a branch should be take or not
+    // handling what the pc value should be
+    always @(*) begin
+        if(branch_cond)
+            pc_in = pc_out + immsext;
+        else if(jalr)
+            pc_in = readout2 + immsext;
+        else
+            pc_in = pc_out + 32'd4;
+    end
+
     program_counter #(.XLEN(32)) pc_inst(
         .pc_in(pc_in),
         .clk(clk),
@@ -91,7 +102,8 @@ module cpu (input clk,rst);
     for I,S,JALR 'b' = sext(imm)
     rest no alu use, some adders
     */
-    reg branch_cond;//this is a boolean, decides if a branch should be take or not
+    
+    // handling instructions that play with the program conter
     always @(*) begin
         branch_cond = 0; // u always miss defaults, keep it in mind while architecting
         case(instr_type)
