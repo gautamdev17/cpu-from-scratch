@@ -89,11 +89,12 @@ module cpu (input clk,rst);
     for I,S,JALR 'b' = sext(imm)
     rest no alu use, some adders
     */
+    wire branch_cond;//this is a boolean, decides if a branch should be take or not
     always @(*) begin
         case(instr_type)
-            B_type: begin
-                case(funct3)
-                    3'h0: 
+            B_type: begin // if the inst is branch
+                case(funct3) // check which branch instruction
+                    3'h0: branch_cond = 
                 endcase
                 pc_in = 
             end
