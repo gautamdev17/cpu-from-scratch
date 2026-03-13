@@ -10,8 +10,9 @@ module cpu (input clk,rst);
     localparam INUM = 64;
     wire [3:0]alu_sel;
     wire [2:0]instr_type,funct3;
-    wire ALUb,RegWrite,ALUorMem,WriteMem;
+    wire ALUb,RegWrite,ALUorMem,WriteMem,jalr;
 
+    pc_mux ()
     program_counter #(.XLEN(32)) pc_inst(
         .pc_in(pc_in),
         .clk(clk),
@@ -32,7 +33,8 @@ module cpu (input clk,rst);
         .ALUb(ALUb),
         .RegWrite(RegWrite),
         .ALUorMem(ALUorMem),
-        .WriteMem(WriteMem)
+        .WriteMem(WriteMem),
+        .jalr(jalr)
     );
     
     always @(*) begin
@@ -89,15 +91,26 @@ module cpu (input clk,rst);
     for I,S,JALR 'b' = sext(imm)
     rest no alu use, some adders
     */
-    wire branch_cond;//this is a boolean, decides if a branch should be take or not
+    reg branch_cond;//this is a boolean, decides if a branch should be take or not
     always @(*) begin
+        branch_cond = 0; // u always miss defaults, keep it in mind while architecting
         case(instr_type)
             B_type: begin // if the inst is branch
                 case(funct3) // check which branch instruction
-                    3'h0: branch_cond = 
+                    // choose if to branch or not based on alu ka result
+                    3'h0: branch_cond = ~(|c);//BEQ
+                    3'h1: branch_cond = |c;//BNE
+                    3'h4: branch_cond = c[0];//BLT
+                    3'h5: branch_cond = ~c[0];//BGE
+                    3'h6: branch_cond = c[0];//BLTU
+                    3'h7: branch_cond = ~c[0];//BGEU
                 endcase
-                pc_in = 
             end
+            J_type:
+                branch_cond = 1; // does same function as branch_cond, just the alu part it doesnt do
+                // so i gave the same reg
+            // jalr is taken care by the deocder
+            // so no need extra cases
         endcase
     end
 endmodule

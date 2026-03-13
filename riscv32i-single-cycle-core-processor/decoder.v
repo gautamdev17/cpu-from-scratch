@@ -2,7 +2,8 @@ module decoder (input [31:0]inst,//decoding the instruction
 output reg [3:0]alu_sel,//for selection of alu operation
 output reg [2:0]instr_type,//for sext
 output [2:0]funct3,//for finding which B-type instruction
-output ALUb,RegWrite,ALUorMem,WriteMem);//fior figuring out what does to ALU ka 'b'
+output ALUb,RegWrite,ALUorMem,WriteMem,
+output reg jalr);//fior figuring out what does to ALU ka 'b'
     localparam R_type = 3'b000;
     localparam I_type = 3'b001;
     localparam S_type = 3'b010;
@@ -31,6 +32,7 @@ output ALUb,RegWrite,ALUorMem,WriteMem);//fior figuring out what does to ALU ka 
         alu_sel = 4'h0;
         instr_type = R_type;
         load = 1'b0;
+        jalr = 1'b0;
         case(opcode)
             R_op: begin //r-type
                 instr_type = R_type;
@@ -98,10 +100,13 @@ output ALUb,RegWrite,ALUorMem,WriteMem);//fior figuring out what does to ALU ka 
             // jal & jalr
             J_op: begin
                 instr_type = J_type;
+                //include rd write here
                     //jal j-type
             end
             I_jalr_op: begin
                 instr_type = I_type;
+                jalr = 1'b1;
+                //include rd write here
                     //jalr i-type
             end
             //u-type
