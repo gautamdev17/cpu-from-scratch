@@ -11,7 +11,7 @@ module cpu (input clk,rst);
     localparam INUM = 64;
     wire [3:0]alu_sel;
     wire [2:0]instr_type,funct3;
-    wire ALUb,RegWrite,ALUorMem,WriteMem,jalr;
+    wire ALUb,RegWrite,ALUorMem,WriteMem,jalr,lui,auipc;
 
     reg branch_cond;//this is a boolean, decides if a branch should be take or not
     // handling what the pc value should be
@@ -46,6 +46,8 @@ module cpu (input clk,rst);
         .ALUorMem(ALUorMem),
         .WriteMem(WriteMem),
         .jalr(jalr)
+        .lui(lui),
+        .auipc(auipc)
     );
     
     always @(*) begin

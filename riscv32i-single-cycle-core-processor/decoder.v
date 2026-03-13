@@ -3,7 +3,7 @@ output reg [3:0]alu_sel,//for selection of alu operation
 output reg [2:0]instr_type,//for sext
 output [2:0]funct3,//for finding which B-type instruction
 output ALUb,RegWrite,ALUorMem,WriteMem,
-output reg jalr);//fior figuring out what does to ALU ka 'b'
+output reg jalr,lui,auipc);//fior figuring out what does to ALU ka 'b'
     localparam R_type = 3'b000;
     localparam I_type = 3'b001;
     localparam S_type = 3'b010;
@@ -26,13 +26,15 @@ output reg jalr);//fior figuring out what does to ALU ka 'b'
     wire [6:0]funct7;
     assign funct7 = inst[31:25];
     assign funct3 = inst[14:12];
-    reg load ;
+    reg load;
 
     always @(*) begin
         alu_sel = 4'h0;
         instr_type = R_type;
         load = 1'b0;
         jalr = 1'b0;
+        lui = 1'b0;
+        auipc = 1'b0;
         case(opcode)
             R_op: begin //r-type
                 instr_type = R_type;
@@ -112,10 +114,12 @@ output reg jalr);//fior figuring out what does to ALU ka 'b'
             //u-type
             U_lui_op: begin
                 instr_type = U_type;
+                lui = 1'b1;
                     //lui
             end
             U_auipc_op: begin
                 instr_type = U_type;
+                auipc = 1'b1;
                     //auipc
             end
             // ditched the block below. reason: say if alu_sel is not assigned for an opcode, we need default for that
