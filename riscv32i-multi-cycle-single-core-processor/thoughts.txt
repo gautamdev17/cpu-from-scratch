@@ -1,0 +1,17 @@
+what my thinking is:
+1. split each instruction into stages. smallest units, like tokens.
+2. for each of those stages add intermediate regs
+3. they all are controlled by control signals. a fsm. in the end.
+
+the fsm sequences everything
+
+
+mutli cycle is division of an instruction into stages. 
+having intermediate regs to store values in each clk cycle. 
+but one instruction has to still go through its own stages, in its end, next instruction starts.
+ this makes int regs idele. so pipeling make them useful
+
+ so ill go through each inst type. ill add intermediate clocked regs. then think bout a fsm controlling it
+look into the pause points. those pause points become states of the fsm.
+
+look through paths of each instr_type. then identify natural pause points.

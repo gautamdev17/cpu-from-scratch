@@ -1,4 +1,0 @@
-what my thinking is:
-1. split each instruction into stages. smallest units, like tokens.
-2. for each of those stages add intermediate regs
-3. they all are controlled by control signals. a fsm. in the end.
