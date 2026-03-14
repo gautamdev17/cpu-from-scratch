@@ -24,6 +24,7 @@ Supports 35 instructions across all base RV32I formats:
 - U-type: LUI, AUIPC
 
 **Modules:**
+  Inside riscv32i-multi-cycle-single-core-processor
 - `program_counter.v` — plain register, next-PC mux logic in top module
 - `instruction_mem.v` — synchronous ROM, loads from program.hex
 - `register_file.v` — 32x32 regfile, x0 hardwired to zero
