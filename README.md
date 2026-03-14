@@ -48,15 +48,7 @@ vvp cpu_sim
 Work in progress. Datapath design and stage breakdown documented in 
 `thoughts.txt`.
 
-## Roadmap
-- [x] RV32I Single cycle
-- [ ] RV32I Multi cycle
-- [ ] 5-stage pipeline with hazard detection and forwarding
-- [ ] L1 cache (direct mapped)
-- [ ] Branch prediction (2-bit saturating counter + BTB)
-- [ ] Out of order execution (Tomasulo)
-
 ## Reference
-- Onur Mutlu — Computer Architecture Lectures (ETH Zurich / CMU)
+- Onur Mutlu — Computer Architecture Lectures, ETH Zurich
 - Patterson & Hennessy — Computer Organization and Design
 - RISC-V ISA Specification
