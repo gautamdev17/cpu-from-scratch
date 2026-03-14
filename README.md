@@ -11,7 +11,7 @@ pipeline and beyond.
 A fully functional RV32I single cycle processor implemented in Verilog.
 
 ### Architecture diagram (needs some updates)
-![Single Cycle Datapath](single-architecture-plan.jpg)
+![Single Cycle Datapath](single-architecture-plan-1.jpg)
 
 
 Supports 35 instructions across all base RV32I formats:
