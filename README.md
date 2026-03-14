@@ -10,6 +10,10 @@ pipeline and beyond.
 ### riscv32i-single-cycle-core-processor
 A fully functional RV32I single cycle processor implemented in Verilog.
 
+### Architecture diagram (needs some updates)
+![Single Cycle Datapath](single-architecture-plan-1.jpg)
+
+
 Supports 35 instructions across all base RV32I formats:
 - R-type: ADD, SUB, XOR, OR, AND, SLL, SRL, SRA, SLT, SLTU
 - I-type ALU: ADDI, XORI, ORI, ANDI, SLLI, SRLI, SRAI, SLTI, SLTIU
@@ -20,6 +24,7 @@ Supports 35 instructions across all base RV32I formats:
 - U-type: LUI, AUIPC
 
 **Modules:**
+  Inside riscv32i-multi-cycle-single-core-processor
 - `program_counter.v` — plain register, next-PC mux logic in top module
 - `instruction_mem.v` — synchronous ROM, loads from program.hex
 - `register_file.v` — 32x32 regfile, x0 hardwired to zero
