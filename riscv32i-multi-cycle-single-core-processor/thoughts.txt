@@ -57,3 +57,18 @@ Fetch → latch into IR
 Read rs1, rs2 from regfile → latch into A, B. Sign extend imm combinationally
 ALU using A, immsext → latch into ALUOut
 Write B to dmem at address ALUOut
+
+I'll do I type load now.
+1. Fetch. Store inst in intermediate reg.
+2. Read regs and store in intermediate reg. Imm is signed xtended combinationally.
+3. Alu out is stored in intermediate reg.
+4. Dmem is read and written to reg file.
+That's all
+
+Since dmem read is slow. I'll split that step.
+1. Fetch. Store inst in intermediate reg.
+2. Read regs and store in intermediate reg. Imm is signed xtended combinationally.
+3. Alu out is stored in intermediate reg.
+4. Dmem is read and stored in intermediate reg.
+5. Written to reg file.
+That's all
