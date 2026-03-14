@@ -65,7 +65,7 @@ I'll do I type load now.
 4. Dmem is read and written to reg file.
 That's all
 
-Since dmem read is slow. I'll split that step.
+Since dmem read is slow. I'll split that step. (only for harvard arch implementation)
 1. Fetch. Store inst in intermediate reg.
 2. Read regs and store in intermediate reg. Imm is signed xtended combinationally.
 3. Alu out is stored in intermediate reg.
@@ -112,4 +112,3 @@ I think branches are 4 cycles
 3. Alu out. Store in intermediate reg.
 4. Mux the output(combinational) and write to pc.
 That's all.
-
