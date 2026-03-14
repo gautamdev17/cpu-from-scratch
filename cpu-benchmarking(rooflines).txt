@@ -1,0 +1,3 @@
+https://jax-ml.github.io/scaling-book/roofline/
+
+a good tutorioal for roofline study, u can compare performances and benchmark chips
