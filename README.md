@@ -1,5 +1,9 @@
 # cpu-from-scratch
 
+### Architecture diagram (needs some updatesx)
+![Single Cycle Datapath](riscv32i-single-cycle-single-core-processor/cpu_arch_1.jpg)
+![Control Signals](riscv32i-single-cycle-single-core-processor/cpu_arch_2.jpg)
+
 Building processors from the ground up in Verilog, following Onur Mutlu's 
 computer architecture lectures. This repo documents my journey implementing 
 RISC-V processors incrementally — starting from single cycle, working towards 
@@ -9,10 +13,6 @@ pipeline and beyond.
 
 ### riscv32i-single-cycle-core-processor
 A fully functional RV32I single cycle processor implemented in Verilog.
-
-### Architecture diagram (needs some updates)
-![Single Cycle Datapath](riscv32i-single-cycle-single-core-processor/cpu_arch_1.jpg)
-![Control Signals](riscv32i-single-cycle-single-core-processor/cpu_arch_2.jpg)
 
 Supports 35 instructions across all base RV32I formats:
 - R-type: ADD, SUB, XOR, OR, AND, SLL, SRL, SRA, SLT, SLTU
