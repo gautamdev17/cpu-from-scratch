@@ -53,7 +53,7 @@ vvp cpu_sim
 Work in progress. Datapath design and stage breakdown documented in 
 `thoughts.txt`.
 
-## Reference
+## References
 - Onur Mutlu — Computer Architecture Lectures, ETH Zurich
 - Patterson & Hennessy — Computer Organization and Design
 - RISC-V ISA Specification
