@@ -45,3 +45,15 @@ Fetch → latch into IR
 Read rs1 from regfile → latch into A. Sign extend imm combinationally
 ALU using A, immsext → latch into ALUOut
 Write ALUOut to regfile
+
+Ok for store type:
+1. Fetch. Store inst in intermediate reg.
+2. Read regs and store in intermediate reg. Imm is signed xtended combinationally.
+3. Add in alu store that result in intermediate reg.
+4. Write in dmem.
+
+S-type Store (4 cycles)
+Fetch → latch into IR
+Read rs1, rs2 from regfile → latch into A, B. Sign extend imm combinationally
+ALU using A, immsext → latch into ALUOut
+Write B to dmem at address ALUOut
