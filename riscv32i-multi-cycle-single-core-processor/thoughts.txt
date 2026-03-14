@@ -15,3 +15,33 @@ but one instruction has to still go through its own stages, in its end, next ins
 look into the pause points. those pause points become states of the fsm.
 
 look through paths of each instr_type. then identify natural pause points.
+
+ok so I'll be writing my ideas on how to divide instructions into cycles.
+
+Ok let's start from first.
+R type.
+1. Fetch. Store instruction in intermediate reg.
+2. Now take that read regs and store that in one intermediate reg.
+3. Take those to alu and store alu out in one reg
+4. Now take that and write that in reg file
+
+I type except loads and jalr will do the same job. Except for that there will be a mux.
+0. Fetch.
+1. Rs1 read in reg file stored in intermediate reg. Imm will be combinationally sign extended. 
+2. Then add in alu will be stored in a reg
+3. Reg file right back one more cycle
+That's all 4 cycles
+
+Here's the summary so far:
+
+R-type (4 cycles)
+Fetch → latch into IR
+Read rs1, rs2 from regfile → latch into A, B registers
+ALU using A, B → latch into ALUOut
+Write ALUOut to regfile
+
+I-type ALU (4 cycles)
+Fetch → latch into IR
+Read rs1 from regfile → latch into A. Sign extend imm combinationally
+ALU using A, immsext → latch into ALUOut
+Write ALUOut to regfile
