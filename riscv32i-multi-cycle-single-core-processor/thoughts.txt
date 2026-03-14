@@ -72,3 +72,31 @@ Since dmem read is slow. I'll split that step.
 4. Dmem is read and stored in intermediate reg.
 5. Written to reg file.
 That's all
+
+Perfect. 5 cycles for load. That's your longest instruction.
+Updated full summary:
+R-type (4 cycles)
+Fetch → IR
+Read rs1, rs2 → A, B
+ALU using A, B → ALUOut
+Write ALUOut to regfile
+I-type ALU (4 cycles)
+Fetch → IR
+Read rs1 → A, sign extend imm
+ALU using A, immsext → ALUOut
+Write ALUOut to regfile
+S-type (4 cycles)
+Fetch → IR
+Read rs1, rs2 → A, B, sign extend imm
+ALU using A, immsext → ALUOut
+Write B to dmem at ALUOut
+I-type Load (5 cycles)
+Fetch → IR
+Read rs1 → A, sign extend imm
+ALU using A, immsext → ALUOut
+Dmem read at ALUOut → MDR
+Write MDR to regfile
+Pending:
+B-type
+JAL, JALR
+LUI, AUIPC
