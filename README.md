@@ -11,8 +11,8 @@ pipeline and beyond.
 A fully functional RV32I single cycle processor implemented in Verilog.
 
 ### Architecture diagram (needs some updates)
-![Single Cycle Datapath](single-architecture-plan-1.jpg)
-
+![Single Cycle Datapath](cpu_arch_1.jpg)
+![Control Signals](cpu_arch_2.jpg)
 
 Supports 35 instructions across all base RV32I formats:
 - R-type: ADD, SUB, XOR, OR, AND, SLL, SRL, SRA, SLT, SLTU
