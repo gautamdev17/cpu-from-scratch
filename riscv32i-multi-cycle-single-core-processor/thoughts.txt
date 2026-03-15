@@ -112,3 +112,20 @@ I think branches are 4 cycles
 3. Alu out. Store in intermediate reg.
 4. Mux the output(combinational) and write to pc.
 That's all.
+
+for jal :
+1. fetch
+2. sext offest add it to pc and store in intermediate reg
+3. writ
+
+see i have an idea at the end of each inst, ill parallely update pc based on control signals thats all.
+
+lui is just 2 cycles. 1. fetch. 2. immsext (comb) write to rd.
+
+auipc is 3 cycles. 1. fetch. 2. pc + immsext(comb) 3. write to rd and pc
+
+jalr 4 cycles
+1. fetch
+2. read regs (immsext comb)
+3. immsext store
+4. write to rd and pc
