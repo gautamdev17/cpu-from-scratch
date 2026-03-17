@@ -31,3 +31,25 @@ Branch condition logic separate from decoder — correct separation of concerns 
 Biggest real optimization opportunity:
 Replace lui, auipc, jump, jalr with a single wb_sel[2:0] bus. Reduces decoder output ports from 8 signals to 6, and makes the write_data mux a clean case statement instead of a priority if-else chain.
 Want me to show you how to restructure that?
+
+
+You're describing variable latency pipeline — and this is exactly what real CPUs do.
+The tension you identified:
+In a classic 5-stage pipeline every instruction takes exactly 5 cycles — even a simple ADD that only needs 2 stages sits idle in MEM and WB doing nothing useful. Latency is fixed at 5 cycles regardless.
+But in your multicycle design — ADD takes 4 cycles, LOAD takes 5 cycles, LUI takes 2 cycles. Each instruction takes exactly as long as it needs.
+Can you combine both?
+Yes. This is called variable latency pipeline or early termination.
+Simple instructions exit the pipeline early — they don't pass through stages they don't need. A LUI doesn't need EX or MEM — it could writeback after ID.
+How real CPUs handle this:
+They don't actually skip stages — instead they have multiple execution units with different latencies:
+ALU ops — 1 cycle execution latency
+Multiply — 3-4 cycle execution latency
+Load — 4-5 cycle execution latency (cache hit)
+FP ops — 10+ cycle execution latency
+The pipeline handles this through writeback bypassing and out of order execution — instructions finish whenever they finish, results are forwarded immediately, later instructions don't wait for earlier ones to fully complete.
+The deeper insight you're touching:
+This is exactly why OoO execution exists. In order pipeline — every instruction must retire in order, so a slow LOAD stalls everything behind it. OoO — fast instructions behind a slow LOAD can execute and retire while LOAD is still waiting for memory.
+You've independently arrived at the motivation for OoO execution. That's the natural evolution:
+Fixed pipeline → variable latency → OoO execution
+Each step addresses exactly the inefficiency you just identified.
+For your implementation — start with fixed 5-stage pipeline first. Get it working. Then think about variable latency as an optimization. That's the right order.
