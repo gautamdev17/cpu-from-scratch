@@ -1,0 +1,33 @@
+Good question. Let me analyze your design for redundancy:
+Potential optimizations:
+1. lui and auipc signals from decoder
+You have separate lui, auipc, jump, jalr wires. These could be encoded into a 3-bit wb_sel signal instead of 4 separate wires — saves routing and makes the write_data mux cleaner:
+wb_sel:
+000 → c (ALU)
+001 → data (dmem)
+010 → immsext (LUI)
+011 → pc+immsext (AUIPC)
+100 → pc+4 (JAL/JALR)
+One 3-bit bus instead of 4 separate control wires.
+2. ALUb signal
+Your ALUb controls the b-input mux to ALU. Currently derived as:
+assign ALUb = !((instr_type==R_type) | (instr_type==B_type));
+This is correct but could be part of a unified alu_src encoding if you restructure decoder outputs.
+3. Separate adders for pc+immsext and pc+4
+In your write_data mux you compute both pc_out + immsext and pc_out + 4 as separate combinational paths. You could share the PC adder — compute pc_out + immsext always, and pc_out + 4 is just a fixed increment. Not a huge saving but cleaner.
+4. instr_type encoding
+You use 3-bit instr_type but only have 6 types — fits in 3 bits fine. No waste there. ✅
+5. data_mem funct3 passthrough
+You pass funct3 out of decoder for branch condition checking — correct. But funct3 is also needed for byte masking in LB/LH/SB/SH which you haven't implemented yet. Once you implement byte masking, funct3 already goes to the right place. ✅ Good forward-looking design.
+What's actually unnecessary:
+The commented out old write_data mux code in cpu.v — just dead code, clean it up
+.DS_Store in your repo — already flagged
+pc_mux.v — you deleted it but make sure it's not lingering
+What's genuinely good about your design:
+PC as plain register with mux logic in top module — clean ✅
+Decoder defaults at top of always block — prevents latches ✅
+x0 write protection in regfile ✅
+Branch condition logic separate from decoder — correct separation of concerns ✅
+Biggest real optimization opportunity:
+Replace lui, auipc, jump, jalr with a single wb_sel[2:0] bus. Reduces decoder output ports from 8 signals to 6, and makes the write_data mux a clean case statement instead of a priority if-else chain.
+Want me to show you how to restructure that?
