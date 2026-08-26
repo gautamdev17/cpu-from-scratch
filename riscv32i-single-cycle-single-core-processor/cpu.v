@@ -13,15 +13,21 @@ module cpu (input clk,rst);
     wire [2:0]instr_type,funct3;
     wire ALUb,RegWrite,ALUorMem,WriteMem,jalr,lui,auipc,jump;
 
-    reg branch_cond;//this is a boolean, decides if a branch should be take or not
+    reg branch_cond;//this is a boolean, decides if a branch should be taken or not
     // handling what the pc value should be
+    /*
+    pc_in holds the next state of the pc reg. same as a dff.
+    if branchcond, take that, else if jalr take the out port in regfile else just go to next line of code (+=4)
+    imem is made up like this: reg [31:0] imem [inum-1:0]
+    so its organized as 32 bit words not bytes
+    */
     always @(*) begin
         if(branch_cond)
             pc_in = pc_out + immsext;
         else if(jalr)
-            pc_in = readout2 + immsext;
+            pc_in = readout1 + immsext;//fixed bug, was written readout2
         else
-            pc_in = pc_out + 32'd4;
+            pc_in = pc_out + 32'd4;//jump by 4 since each instr is 4 bytes
     end
 
     program_counter #(.XLEN(32)) pc_inst(

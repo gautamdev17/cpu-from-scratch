@@ -1,0 +1,3 @@
+critical path: longest trace of comb path between two flops
+
+only two flops are there here, one is pc and the other is the reg file

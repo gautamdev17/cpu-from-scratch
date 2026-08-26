@@ -3,7 +3,7 @@ output reg [3:0]alu_sel,//for selection of alu operation
 output reg [2:0]instr_type,//for sext
 output [2:0]funct3,//for finding which B-type instruction
 output ALUb,RegWrite,ALUorMem,WriteMem,
-output reg jalr,lui,auipc,jump);//fior figuring out what does to ALU ka 'b'
+output reg jalr,lui,auipc,jump);//for figuring out what does to ALU ka 'b'
     localparam R_type = 3'b000;
     localparam I_type = 3'b001;
     localparam S_type = 3'b010;
@@ -29,6 +29,7 @@ output reg jalr,lui,auipc,jump);//fior figuring out what does to ALU ka 'b'
     reg load;
 
     always @(*) begin
+        //defaults to avoid inferred latches
         alu_sel = 4'h0;
         instr_type = R_type;
         load = 1'b0;
