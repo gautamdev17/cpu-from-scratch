@@ -52,6 +52,7 @@ vvp cpu_sim
 ### riscv32i-multi-cycle-core-processor
 Work in progress. Datapath design and stage breakdown documented in 
 `thoughts.txt`.
+planning to  implement OoO cpu
 
 ## References
 - Onur Mutlu — Computer Architecture Lectures, ETH Zurich
