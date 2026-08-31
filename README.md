@@ -1,6 +1,6 @@
 # cpu-from-scratch
 
-### Architecture diagram (needs some updatesx)
+### Architecture diagram for Single Cycle CPU (needs some updates)
 ![Single Cycle Datapath](riscv32i-single-cycle-single-core-processor/cpu_arch_1.jpg)
 ![Control Signals](riscv32i-single-cycle-single-core-processor/cpu_arch_2.jpg)
 
