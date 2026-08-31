@@ -27,10 +27,3 @@ vvp sim.out
 8. `lui` and `auipc`.
 9. A small backward-branch loop (3 iterations) — exercises taken/not-taken transitions on a backward target, i.e. PC redirection to a lower address.
 10. Terminates in a `beq x0,x0,L_END` self-loop so the simulator settles into a steady state instead of running off the end of instruction memory.
-
-## Two real findings from this run
-- **`SRLI`/`SRAI` are swapped in `decoder.v`.** For the I-type shift-right-immediate case, the code picks `alu_sel = SRLI` when `funct7[5]==1` and `SRAI` when `funct7[5]==0` — that's backwards versus the R-type case right above it (which does it correctly) and versus the RV32I spec (bit 30 set = arithmetic). Test evidence: `srai x19, x12, 1` with `x12 = -8` produced `0x7ffffffc` (logical shift) instead of the correct `0xfffffffc` (arithmetic, sign-preserving).
-- **The register file has no reset for its storage array** — only reads of `x0` are forced to zero through a mux; `x0`'s and any never-written register's raw storage stays `X` in simulation (and would be undefined on real hardware without explicit init). Not a bug in this test program (every register it *reads* was written first), but worth knowing if you add code paths that read a register before writing it.
-
-## On your original question — does it have branch prediction?
-No. It's static **predict-not-taken**: `pc_in` always defaults to `pc+4` in IF, and branches/JAL/JALR are resolved in EX, at which point a taken branch/jump flushes IF/ID and ID/EX and redirects the PC — a fixed 2-cycle penalty on every taken branch or jump, 0 on not-taken. No BTB, no dynamic predictor, no speculative fetch down the taken path.
