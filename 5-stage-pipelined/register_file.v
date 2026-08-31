@@ -5,6 +5,12 @@ output reg [31:0] readout1,readout2);
     //caution:x0 mustbe always wired to zero. readin it is foine, writing is bad.
 
     // combinational read
+    integer k;
+    initial begin
+        for (k = 0; k < 32; k = k + 1)
+            x[k] = 32'b0;
+    end
+    
     always @(*) begin
         readout1 = (readreg1 == 5'b0) ? 32'b0 : x[readreg1]; //creates mux //x0 is grounded
         readout2 = (readreg2 == 5'b0) ? 32'b0 : x[readreg2];

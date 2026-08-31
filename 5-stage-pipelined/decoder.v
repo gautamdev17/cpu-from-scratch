@@ -63,9 +63,9 @@ output reg jalr,lui,auipc,jump);//for figuring out what does to ALU ka 'b'
                     3'h1: alu_sel = 4'h7;//SLLI //ignoring imm[5:11] since there is no other case with this (opcode,funct3) comb
                     3'h5: begin //SRLI & SRAI
                           if(funct7[5]) // imm[5:11] found equivalent to imm[5:11]
-                            alu_sel = 4'h8;//SRLI
+                            alu_sel = 4'h9;//SRLI
                           else
-                            alu_sel = 4'h9;//SRAI
+                            alu_sel = 4'h8;//SRAI
                     end
                     3'h2: alu_sel = 4'h3;//SLTI
                     3'h3: alu_sel = 4'h2;//SLTIU

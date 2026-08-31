@@ -115,6 +115,9 @@ module cpu_pipe (input clk, rst);
     // =========================================================
     // Hazard detection (uses ID/EX.rd + IF/ID decoded rs1/rs2)
     // =========================================================
+    // (forward-declared here so HDU's port connections below can bind them)
+    wire [4:0]  rs1_ex, rs2_ex, rd_ex;
+    wire ALUb_ex, RegWrite_ex, ALUorMem_ex, WriteMem_ex;
     hazard_detection_unit HDU (
         .id_ex_rd(rd_ex), .id_ex_ALUorMem(ALUorMem_ex),
         .if_id_rs1(rs1_id), .if_id_rs2(rs2_id),
@@ -126,10 +129,8 @@ module cpu_pipe (input clk, rst);
     // =========================================================
     wire [31:0] pc_ex, pc_plus4_ex;
     wire [31:0] readout1_ex, readout2_ex, immsext_ex;
-    wire [4:0]  rs1_ex, rs2_ex, rd_ex;
     wire [3:0] alu_sel_ex;
     wire [2:0] instr_type_ex, funct3_ex;
-    wire ALUb_ex, RegWrite_ex, ALUorMem_ex, WriteMem_ex;
     wire jalr_ex, lui_ex, auipc_ex, jump_ex;
 
     id_ex_reg IDEX (
@@ -156,6 +157,9 @@ module cpu_pipe (input clk, rst);
     wire [1:0] forwardA, forwardB;
     wire [31:0] ex_mem_alu_out, mem_wb_writeback_val; // fwd sources (declared below, forward-refd here)
 
+    // (forward-declared here so FWD's port connections below can bind them)
+    wire [4:0]  rd_mem;
+    wire RegWrite_mem, ALUorMem_mem, WriteMem_mem;
     forwarding_unit FWD (
         .id_ex_rs1(rs1_ex), .id_ex_rs2(rs2_ex),
         .ex_mem_rd(rd_mem), .ex_mem_RegWrite(RegWrite_mem),
@@ -222,8 +226,6 @@ module cpu_pipe (input clk, rst);
     // ==================  EX/MEM REGISTER  =====================
     // =========================================================
     wire [31:0] pc_plus4_mem, pc_target_mem, immsext_mem, store_data_mem;
-    wire [4:0]  rd_mem;
-    wire RegWrite_mem, ALUorMem_mem, WriteMem_mem;
     wire jalr_mem, lui_mem, auipc_mem, jump_mem;
 
     ex_mem_reg EXMEM (
