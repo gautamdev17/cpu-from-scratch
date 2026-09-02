@@ -4,13 +4,14 @@ output reg [2:0]instr_type,//for sext
 output [2:0]funct3,//for finding which B-type instruction
 output ALUb,RegWrite,ALUorMem,WriteMem,
 output reg jalr,lui,auipc,jump);//for figuring out what does to ALU ka 'b'
+    //type of instruction, just using params instead of writing numericals everywhere
     localparam R_type = 3'b000;
     localparam I_type = 3'b001;
     localparam S_type = 3'b010;
     localparam B_type = 3'b011;
     localparam U_type = 3'b100;
     localparam J_type = 3'b101;
-
+    // exact instr type based on opcode
     localparam R_op = 7'b0110011;
     localparam I_op = 7'b0010011;
     localparam I_load_op = 7'b0000011;
@@ -83,6 +84,7 @@ output reg jalr,lui,auipc,jump);//for figuring out what does to ALU ka 'b'
             end
             S_op: begin //s-type
                 instr_type = S_type;
+                //need to implement accomodation of store byte, store half byte, store word
                 // case(funct3)
                 //     3'h0: //SB
                 //     3'h1: //SH
@@ -93,10 +95,13 @@ output reg jalr,lui,auipc,jump);//for figuring out what does to ALU ka 'b'
                 instr_type = B_type;
                 // we need to tell which function it is outside, they need for the contro;l signals
                 case(funct3)
+                    //to check if eq/neq we have to perform subtraction
                     3'h0: alu_sel = 4'h1;//BEQ
                     3'h1: alu_sel = 4'h1;//BNE
+                    //to check if less than or greater than we have to do slt(set less than)
                     3'h4: alu_sel = 4'h3;//BLT
                     3'h5: alu_sel = 4'h3;//BGE
+                    //to check if less than or greater than in UNSIGNED we have to do sltu(set less than unsigned)
                     3'h6: alu_sel = 4'h2;//BLTU
                     3'h7: alu_sel = 4'h2;//BGEU
                 endcase
@@ -110,7 +115,7 @@ output reg jalr,lui,auipc,jump);//for figuring out what does to ALU ka 'b'
             end
             I_jalr_op: begin
                 instr_type = I_type;
-                jalr = 1'b1;
+                jalr = 1'b1;//jump and link register
                 //include rd write here
                     //jalr i-type
             end

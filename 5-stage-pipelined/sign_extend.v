@@ -8,7 +8,8 @@ module sign_extend #(parameter XLEN = 32) (input [XLEN-1:0]inst,input [2:0]instr
             inst[30:25] = imm[10:5];
             inst[11:8] = imm[4:1];
             inst[7] = imm[11]         
-            imm[0] = 0;  */
+            imm[0] = 0;  // Because branch targets are aligned, so the target offset is always a multiple of 2. Hence, imm[0] = 0
+            */
             3'b011: immsext = {{19{inst[XLEN-1]}},inst[31],inst[7],inst[30:25],inst[11:8],1'b0};//b-type
             /* the j-type is decoded like this:
             inst[31] = imm[20];

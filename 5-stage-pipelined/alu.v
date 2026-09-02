@@ -1,3 +1,4 @@
+//used in EX stage
 module alu #(parameter XLEN = 32) (input [XLEN-1:0]a,b,input [3:0]alu_sel,output reg [XLEN-1:0] c);
     always @(*) begin
         c = 32'b0;
