@@ -14,7 +14,6 @@ iverilog -g2012 -o sim.out testbench.v cpu_pipe.v alu.v data_mem.v decoder.v ex_
 vvp sim.out
 ```
 
-(I already ran this myself with iverilog to make sure it compiles and the expected values are correct — see chat for the run log.)
 
 ## What the program exercises
 1. All R-type ALU ops (add/sub/and/or/xor/sll/srl/sra/slt/sltu) and all I-type ALU ops (addi/andi/ori/xori/slli/srli/srai/slti/sltiu), including a negative operand for the shifts.
